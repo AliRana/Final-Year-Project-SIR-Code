@@ -46,3 +46,5 @@ plt.title("SIRD Model Simulation")
 plt.legend()
 plt.grid()
 plt.show()
+
+# TODO: Change code so that it has an imput for the timespan
