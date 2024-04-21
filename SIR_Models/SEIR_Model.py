@@ -49,3 +49,6 @@ plt.title("SEIR Model Simulation")
 plt.legend()
 plt.grid()
 plt.show()
+
+
+# TODO: Add code so that it has an input for the timespan
