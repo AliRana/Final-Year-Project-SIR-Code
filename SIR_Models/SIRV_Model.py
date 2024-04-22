@@ -21,9 +21,10 @@ V0 = float(input("Enter initial vaccinated fraction (e.g., 0.0): "))
 beta = float(input("Enter transmission rate (e.g., 0.3): "))
 gamma = float(input("Enter recovery rate (e.g., 0.1): "))
 vaccination_rate = float(input("Enter vaccination rate (e.g., 0.02): "))
+t_end = float(input("Enter end time of simulation: "))
 
 # Time span
-t_span = (0, 365)
+t_span = (0, t_end)
 
 # Solve the ODEs
 sol = solve_ivp(
@@ -31,7 +32,7 @@ sol = solve_ivp(
     t_span,
     [S0, I0, R0, V0],
     args=(beta, gamma, vaccination_rate),
-    t_eval=np.linspace(0, 365, 1000),
+    t_eval=np.linspace(0, t_end, 1000),
 )
 
 # Plot the results
@@ -46,9 +47,6 @@ plt.title("SIRV Model Simulation")
 plt.legend()
 plt.grid()
 plt.show()
-
-# TODO: Change code so that it has an input for the time
-
 
 # In this code:
 #
