@@ -21,9 +21,11 @@ R0 = float(input("Enter initial recovered fraction (e.g., 0.0): "))
 beta = float(input("Enter transmission rate (e.g., 0.3): "))
 sigma = float(input("Enter incubation rate (e.g., 0.1): "))
 gamma = float(input("Enter recovery rate (e.g., 0.1): "))
+t_end = float(input("Enter end time of simulation:(e.g. 200) "))
+
 
 # Time span
-t_span = (0, 200)
+t_span = (0, t_end)
 
 
 # Create a function to define the ODE system
@@ -35,7 +37,7 @@ def seir_ode(t, y):
 y0 = [S0, E0, I0, R0]
 
 # Solve the ODEs
-sol = solve_ivp(seir_ode, t_span, y0, t_eval=np.linspace(0, 200, 1000))
+sol = solve_ivp(seir_ode, t_span, y0, t_eval=np.linspace(0, t_end, 1000))
 
 # Plot the results
 plt.figure(figsize=(10, 6))
@@ -49,6 +51,3 @@ plt.title("SEIR Model Simulation")
 plt.legend()
 plt.grid()
 plt.show()
-
-
-# TODO: Add code so that it has an input for the timespan
