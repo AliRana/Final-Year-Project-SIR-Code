@@ -21,9 +21,10 @@ D0 = float(input("Enter initial deceased fraction (e.g., 0.0): "))
 beta = float(input("Enter transmission rate (e.g., 0.3): "))
 gamma = float(input("Enter recovery rate (e.g., 0.1): "))
 mu = float(input("Enter mortality rate (e.g., 0.03): "))
+t_end = float(input("Enter end time of simulation (e.g., 0-200): "))
 
 # Time span
-t_span = (0, 200)
+t_span = (0, t_end)
 
 # Solve the ODEs
 sol = solve_ivp(
@@ -31,7 +32,7 @@ sol = solve_ivp(
     t_span,
     [S0, I0, R0, D0],
     args=(beta, gamma, mu),
-    t_eval=np.linspace(0, 200, 1000),
+    t_eval=np.linspace(0, t_end, 1000),
 )
 
 # Plot the results
