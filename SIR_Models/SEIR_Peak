@@ -35,45 +35,47 @@ def seir_ode(t, y):
 # Initial conditions
 y0 = [S0, E0, I0, R0]
 
-
-# Function to track infected and time of peak infection
-def track_infections(t, y):
-    return y[2]  # Return only the infected fraction
-
-
 # Solve the ODEs
-sol = solve_ivp(
-    seir_ode, t_span, y0, t_eval=np.linspace(0, t_end, 1000), events=track_infections
-)
-
-# Extract peak infection time and value
-peak_index = np.argmax(sol.y[2])
-peak_time = sol.t_events[0][peak_index][0]
-peak_infections = sol.y[2][peak_index]
-
-# Calculate total infected
-total_infected = np.trapz(sol.y[2], sol.t)
+sol = solve_ivp(seir_ode, t_span, y0, t_eval=np.linspace(0, t_end, 1000))
 
 # Plot the results
-plt.figure(figsize=(10, 6))
-plt.plot(sol.t, sol.y[0], label="Susceptible")
-plt.plot(sol.t, sol.y[1], label="Exposed")
-plt.plot(sol.t, sol.y[2], label="Infected")
-plt.plot(sol.t, sol.y[3], label="Recovered")
-plt.scatter(
-    peak_time,
-    peak_infections,
-    color="red",
-    marker="o",
-    label=f"Peak Infections: {peak_infections:.2f} at t={peak_time:.2f}",
-)
+plt.figure(figsize=(12, 8))
+
+# Plot Susceptible
+plt.subplot(2, 2, 1)
+plt.plot(sol.t, sol.y[0], label="Susceptible", color="blue")
 plt.xlabel("Time")
 plt.ylabel("Fraction of Population")
-plt.title("SEIR Model Simulation")
-plt.legend()
+plt.title("Susceptible")
 plt.grid()
-plt.show()
+plt.legend()
 
-# Print total infected and peak infection information
-print(f"Total Infected: {total_infected:.2f}")
-print(f"Peak Infections: {peak_infections:.2f} at t={peak_time:.2f}")
+# Plot Exposed
+plt.subplot(2, 2, 2)
+plt.plot(sol.t, sol.y[1], label="Exposed", color="orange")
+plt.xlabel("Time")
+plt.ylabel("Fraction of Population")
+plt.title("Exposed")
+plt.grid()
+plt.legend()
+
+# Plot Infected
+plt.subplot(2, 2, 3)
+plt.plot(sol.t, sol.y[2], label="Infected", color="red")
+plt.xlabel("Time")
+plt.ylabel("Fraction of Population")
+plt.title("Infected")
+plt.grid()
+plt.legend()
+
+# Plot Recovered
+plt.subplot(2, 2, 4)
+plt.plot(sol.t, sol.y[3], label="Recovered", color="green")
+plt.xlabel("Time")
+plt.ylabel("Fraction of Population")
+plt.title("Recovered")
+plt.grid()
+plt.legend()
+
+plt.tight_layout()
+plt.show()
