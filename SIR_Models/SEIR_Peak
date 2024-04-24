@@ -1,0 +1,79 @@
+import numpy as np
+from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
+
+
+# SEIR ODE equations
+def seir_model(t, y, beta, sigma, gamma):
+    S, E, I, R = y
+    dSdt = -beta * S * I
+    dEdt = beta * S * I - sigma * E
+    dIdt = sigma * E - gamma * I
+    dRdt = gamma * I
+    return [dSdt, dEdt, dIdt, dRdt]
+
+
+# Take inputs for parameters
+S0 = float(input("Enter initial susceptible fraction (e.g., 0.99): "))
+E0 = float(input("Enter initial exposed fraction (e.g., 0.01): "))
+I0 = float(input("Enter initial infected fraction (e.g., 0.0): "))
+R0 = float(input("Enter initial recovered fraction (e.g., 0.0): "))
+beta = float(input("Enter transmission rate (e.g., 0.3): "))
+sigma = float(input("Enter incubation rate (e.g., 0.1): "))
+gamma = float(input("Enter recovery rate (e.g., 0.1): "))
+t_end = float(input("Enter end time of simulation (e.g., 200): "))
+
+# Time span
+t_span = (0, t_end)
+
+
+# Create a function to define the ODE system
+def seir_ode(t, y):
+    return seir_model(t, y, beta, sigma, gamma)
+
+
+# Initial conditions
+y0 = [S0, E0, I0, R0]
+
+
+# Function to track infected and time of peak infection
+def track_infections(t, y):
+    return y[2]  # Return only the infected fraction
+
+
+# Solve the ODEs
+sol = solve_ivp(
+    seir_ode, t_span, y0, t_eval=np.linspace(0, t_end, 1000), events=track_infections
+)
+
+# Extract peak infection time and value
+peak_index = np.argmax(sol.y[2])
+peak_time = sol.t_events[0][peak_index][0]
+peak_infections = sol.y[2][peak_index]
+
+# Calculate total infected
+total_infected = np.trapz(sol.y[2], sol.t)
+
+# Plot the results
+plt.figure(figsize=(10, 6))
+plt.plot(sol.t, sol.y[0], label="Susceptible")
+plt.plot(sol.t, sol.y[1], label="Exposed")
+plt.plot(sol.t, sol.y[2], label="Infected")
+plt.plot(sol.t, sol.y[3], label="Recovered")
+plt.scatter(
+    peak_time,
+    peak_infections,
+    color="red",
+    marker="o",
+    label=f"Peak Infections: {peak_infections:.2f} at t={peak_time:.2f}",
+)
+plt.xlabel("Time")
+plt.ylabel("Fraction of Population")
+plt.title("SEIR Model Simulation")
+plt.legend()
+plt.grid()
+plt.show()
+
+# Print total infected and peak infection information
+print(f"Total Infected: {total_infected:.2f}")
+print(f"Peak Infections: {peak_infections:.2f} at t={peak_time:.2f}")
