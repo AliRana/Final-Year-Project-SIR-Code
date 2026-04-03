@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-
+#Installed on a Python Virtual Environment
 
 # SIRD ODE equations
 def sird_model(t, y, beta, gamma, mu):
